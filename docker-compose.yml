@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  appauth1:
+    build: ./
+    image: 'appauth1'
+    ports:
+      - '8080:8080'
+    environment:
+      INST_NUM: 1
+
