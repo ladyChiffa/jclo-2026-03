@@ -7,25 +7,31 @@ import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.awt.*;
 
+@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class Jclo202603ApplicationTests {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
+    @Container // нестатичное поле - контейнер будет создаваться каждый раз
 	private final GenericContainer<?> authApp1 = new GenericContainer<>("appauth1")  // имя контейнера из docker-compose.yml
 			.withExposedPorts(8080);
-	private final GenericContainer<?> authApp2 = new GenericContainer<>("appauth1")  // имя контейнера из docker-compose.yml
-			.withExposedPorts(8080);
+    @Container // статичное поле - контейнер будет один на все тесты
+	private static final GenericContainer<?> authApp2 = new GenericContainer<>("appauth1")  // имя контейнера из docker-compose.yml
+			.withExposedPorts(8080); 
 
+	/* когда есть аннотации @Testcontainers и @Container - не нужно следить за жизненным циклом контейнеров
 	@BeforeEach
 	void setUp(){
 		authApp1.start();
 		authApp2.start();
 	}
-
+	*/
 
 	@Test
 	void contextLoads() {
